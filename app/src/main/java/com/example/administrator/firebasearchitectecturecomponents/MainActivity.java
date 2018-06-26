@@ -1,5 +1,7 @@
 package com.example.administrator.firebasearchitectecturecomponents;
 
+import android.arch.lifecycle.LiveData;
+import android.arch.lifecycle.ViewModelProviders;
 import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -13,41 +15,24 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
 public class MainActivity extends AppCompatActivity {
-    private static final String LOG_TAG = "MainActivity";
     TextView tvName;
-
-    private final DatabaseReference ref =
-            FirebaseDatabase.getInstance().getReference("/UserDetails");
+    UserProfileViewModel userProfileViewModel;
+    LiveData<DataSnapshot> liveData;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         tvName = findViewById(R.id.tv_name);
+        userProfileViewModel = ViewModelProviders.of(this).get(UserProfileViewModel.class);
+        liveData = userProfileViewModel.getDataSnapshotLiveData();
+        liveData.observe(this, this::changedData);
     }
 
-    @Override
-    protected void onStart() {
-        super.onStart();
-        ref.addValueEventListener(listner);
-    }
-
-    @Override
-    protected void onStop() {
-        ref.removeEventListener(listner);
-        super.onStop();
-    }
-
-    private ValueEventListener listner = new ValueEventListener() {
-        @Override
-        public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-            String name = dataSnapshot.child("name").getValue(String.class);
+    private void changedData(DataSnapshot data) {
+        if (data != null) {
+            String name = data.child("name").getValue(String.class);
             tvName.setText(name);
         }
-
-        @Override
-        public void onCancelled(@NonNull DatabaseError databaseError) {
-            Log.d(LOG_TAG, databaseError.getDetails());
-        }
-    };
+    }
 }
