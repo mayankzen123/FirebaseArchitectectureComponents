@@ -17,7 +17,7 @@ import com.google.firebase.database.ValueEventListener;
 public class MainActivity extends AppCompatActivity {
     TextView tvName;
     UserProfileViewModel userProfileViewModel;
-    LiveData<DataSnapshot> liveData;
+    LiveData<FirebaseDataBean> liveData;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -29,9 +29,9 @@ public class MainActivity extends AppCompatActivity {
         liveData.observe(this, this::changedData);
     }
 
-    private void changedData(DataSnapshot data) {
+    private void changedData(FirebaseDataBean data) {
         if (data != null) {
-            String name = data.child("name").getValue(String.class);
+            String name = data.getName();
             tvName.setText(name);
         }
     }
