@@ -1,6 +1,7 @@
 package com.example.administrator.firebasearchitectecturecomponents;
 
 import android.arch.lifecycle.LiveData;
+import android.support.annotation.NonNull;
 import android.util.Log;
 import android.widget.Toast;
 
@@ -38,12 +39,12 @@ public class FirebaseQueryLiveData extends LiveData<DataSnapshot> {
 
     private class MyValueEventListener implements ValueEventListener {
         @Override
-        public void onDataChange(DataSnapshot dataSnapshot) {
+        public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
             setValue(dataSnapshot);
         }
 
         @Override
-        public void onCancelled(DatabaseError databaseError) {
+        public void onCancelled(@NonNull DatabaseError databaseError) {
             Log.e(LOG_TAG, "Can't listen to query " + query, databaseError.toException());
         }
     }
